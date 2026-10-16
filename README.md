@@ -1,1 +1,56 @@
-Quest Forge - SurvivalPhát triển Quest Forge: hệ thống phân phối nhiệm vụ động cho game 2D dựa trên luật suy diễn từ dữ liệu telemetry(Developing Quest Forge: A Dynamic Quest Distribution System for 2D Games Based on Rule Inference from Telemetry)Đồ án chuyên ngành CMP436 · Khoa Công nghệ thông tin · HUTECH · HK1 2026–2027Câu định vịĐồ án giải quyết tình trạng người chơi từ bỏ game do nhiệm vụ mất cân bằng độ khó cho nhóm người chơi game 2D sinh tồn, đo bằng tỉ lệ hoàn thành nhiệm vụ và số chuỗi chết liên tiếp.Vấn đề nghiên cứuTrong các game 2D sinh tồn, hệ thống nhiệm vụ cố định (hard-coded) thường không theo kịp sức mạnh thực tế của người chơi: người yếu nhận nhiệm vụ quá khó thì ức chế và bỏ cuộc, người mạnh nhận nhiệm vụ quá dễ thì chán nản. Đồ án xem việc giao nhiệm vụ là một hệ chuyên gia (Rule-based Engine) liên tục đọc dữ liệu telemetry để tự động chọn nhiệm vụ vừa sức. Đặc biệt, người thiết kế game có thể tinh chỉnh các bộ luật này mà không cần can thiệp vào mã nguồn (code) của game.Câu hỏi nghiên cứu và giả thuyếtKý hiệuNội dungCH1Phân phối nhiệm vụ theo luật đọc từ telemetry có đưa tỉ lệ hoàn thành nhiệm vụ vào vùng 60–80% tốt hơn danh sách nhiệm vụ cố định không?CH2Cách phân phối đó có giảm số lần chết liên tiếp (≥3 lần trong 5 phút) không?H1Tỉ lệ hoàn thành nhiệm vụ của nhóm B nằm trong 60–80%, nhóm A lệch khỏi vùng này ít nhất 15 điểm %.H2Số chuỗi chết liên tiếp trung bình mỗi người ở nhóm B thấp hơn nhóm A ít nhất 30%.Thiết kế thí nghiệmNhóm A: Nhóm đối chứng, nhận danh sách nhiệm vụ theo thứ tự cố định (Hard-coded).Nhóm B: Nhóm thực nghiệm, nhận nhiệm vụ được phân phối động dựa trên bộ luật (Rule-based).Biến thay đổi duy nhất: Cơ chế giao nhiệm vụ (được chuyển đổi qua cờ cấu hình). Giữ nguyên hoàn toàn bản build game, bản đồ, chỉ số quái vật và bộ điều khiển.Mục tiêu mẫu: Phân phối cho ≥20 người chơi (nhóm A ≥8, nhóm B ≥12), trong đó ≥10 người ngoài nhóm bạn thân.Bảng trước – sauChỉ sốCách đoTrước (Kế hoạch)Sau (Mục tiêu)Ngày đoBằng chứng1. Tỉ lệ hoàn thành nhiệm vụ(Số Quest hoàn thành / Tổng Quest nhận) * 100%Nhóm A: Chưa cóNhóm B nằm trong 60–80%, Nhóm A lệch ít nhất 15 điểm %Nhóm A: W5–W6Nhóm B: 27/11–03/12Ghi nhận tự động qua Telemetry lưu trên Google Sheets2. Số chuỗi chết liên tiếpĐếm số chuỗi HP=0 (≥3 lần/5 phút) của mỗi userNhóm A: Chưa cóNhóm B thấp hơn nhóm A ≥30%Nhóm A: W5–W6Nhóm B: 27/11–03/12Ghi nhận tự động qua Telemetry lưu trên Google SheetsSản phẩm dự kiến ​​(MVP)Gameplay cốt lõi: Nhân vật 2D di chuyển, chiến đấu và nhặt vật phẩm. Vật phẩm cộng thẳng vào chỉ số (Máu, Sát thương, Tốc độ) để tối ưu luồng dữ liệu (lược bỏ hệ thống túi đồ rườm rà).Rule-Based Engine: Máy luật sử dụng các cấu trúc "Nếu... thì..." có ưu tiên, tự động đọc chỉ số sức mạnh của người chơi (qua Telemetry) để rẽ nhánh nhiệm vụ phù hợp.Đường ống Telemetry (Data Pipeline): Tự động gửi log ẩn danh (số lần chết, nhiệm vụ hoàn thành) về máy chủ độc lập và lưu trữ tổng hợp.DevSecOps: Máy chủ xử lý luật và Telemetry được viết tách biệt, đóng gói Docker và CI/CD hoàn chỉnh.Không làm: LLM sinh nhiệm vụ, học máy, multiplayer, chế tạo đồ (crafting), thế giới mở, bản mobile.Công nghệ sử dụngClient Game: Unity Engine (C#), WebGL (chơi trực tiếp trên trình duyệt hoặc file .exe).Server API: Python (FastAPI).Cơ sở dữ liệu & Log: Google Sheets API, Discord Webhook.DevSecOps: Docker, GitHub Actions (CI/CD), Render (Hosting miễn phí).So sánh với các giải pháp hiện cóGiải pháp hiện hànhƯu điểmĐiểm khác biệt của Quest ForgeNhiệm vụ tĩnh (Hard-coded)Dễ lập trình, không cần server.Dễ gây ức chế/nhàm chán. Quest Forge linh hoạt thay đổi dựa trên năng lực tức thời của người chơi.AI / Machine Learning (Game AAA)Điều chỉnh độ khó rất mượt mà.Tốn nhiều tài nguyên thiết lập. Quest Forge dùng "Hệ chuyên gia" (Rule-based) nhẹ nhàng, giải thích được từng quyết định (Explainable) và dễ cấu hình qua Google Sheets.Tiến độ (Milestones)W1: Khởi tạo đề cương, repo GitHub, README. Chốt Pilot.W4 (Must #1): Nhân vật di chuyển, chiến đấu, nhặt vật phẩm cộng chỉ số + Gửi ≥3 sự kiện telemetry về server FastAPI.W5 (Must #2): Hoàn thiện bộ máy luật đọc cấu hình từ Google Sheets, log luật kích hoạt; vận hành 2 chế độ A/B.W6 (Must #3): Hoàn thiện bảng tổng hợp chỉ số theo nhiệm vụ cho người thiết kế (Google Sheets); bộ đo đầy đủ.W7: Đóng băng tính năng, cấu hình bảo mật, Docker + CI/CD.W10: Đóng gói bản v1.0, nộp báo cáo hoàn chỉnh.Cách chạy dự án(Sẽ cập nhật hướng dẫn và link trải nghiệm WebGL / link tải khi hoàn thành bản Build ở Tuần 4).Dữ liệu người chơiDữ liệu Telemetry (thông số trong game) chỉ được thu thập khi người chơi đồng ý tham gia Pilot. Mọi dữ liệu đều được ẩn danh (dùng ID hệ thống) để đảm bảo quyền riêng tư trước khi đưa vào báo cáo.Thông tin sinh viênSinh viên thực hiện: Ngô Thành Tiến · MSSV: 2380602230 · Lớp: 23DTHC7Giảng viên hướng dẫn: TS. Nguyễn Quang TrungHọc phần: CMP436 – Đồ án chuyên ngành CNTT
+# Quest Forge - Survival
+**Phát triển Quest Forge: hệ thống phân phối nhiệm vụ động cho game 2D dựa trên luật suy diễn từ dữ liệu telemetry**
+
+**Đồ án chuyên ngành CMP436 · Khoa Công nghệ thông tin · HUTECH · HK1 2026–2027**
+
+## Câu định vị
+Đồ án giải quyết tình trạng người chơi từ bỏ game do nhiệm vụ mất cân bằng độ khó cho nhóm người chơi game 2D sinh tồn, đo bằng tỉ lệ hoàn thành nhiệm vụ và số chuỗi chết liên tiếp.
+
+## Vấn đề nghiên cứu
+Trong các game 2D sinh tồn, hệ thống nhiệm vụ cố định thường không theo kịp sức mạnh thực tế của người chơi. Đồ án xây dựng một hệ chuyên gia (Rule-based Engine) liên tục đọc dữ liệu telemetry để tự động chọn nhiệm vụ vừa sức. Người thiết kế game có thể tinh chỉnh các bộ luật này qua file cấu hình.
+
+## Câu hỏi nghiên cứu và giả thuyết
+- **CH1:** Phân phối nhiệm vụ theo luật đọc từ telemetry có đưa tỉ lệ hoàn thành nhiệm vụ vào vùng 60–80% tốt hơn danh sách nhiệm vụ cố định không?
+- **CH2:** Cách phân phối đó có giảm số lần chết liên tiếp (≥3 lần trong 5 phút) không?
+- **H1:** Tỉ lệ hoàn thành nhiệm vụ của nhóm B nằm trong 60–80%, nhóm A lệch khỏi vùng này ít nhất 15 điểm %.
+- **H2:** Số chuỗi chết liên tiếp trung bình mỗi người ở nhóm B thấp hơn nhóm A ít nhất 30%.
+
+## Thiết kế thí nghiệm
+- **Nhóm A:** Nhận danh sách nhiệm vụ cố định (Hard-coded).
+- **Nhóm B:** Nhận nhiệm vụ phân phối động dựa trên bộ luật (Rule-based).
+- **Biến thay đổi duy nhất:** Cơ chế giao nhiệm vụ (đổi qua cờ cấu hình).
+- **Mục tiêu mẫu:** ≥20 người chơi (nhóm A ≥8, nhóm B ≥12).
+
+## Bảng trước – sau
+
+| Chỉ số | Cách đo | Trước (Kế hoạch) | Sau (Mục tiêu) | Ngày đo | Bằng chứng |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **1. Tỉ lệ hoàn thành nhiệm vụ** | (Số Quest hoàn thành / Tổng Quest nhận) * 100% | Nhóm A: Chưa có | Nhóm B nằm trong 60–80%, Nhóm A lệch ít nhất 15 điểm % | Nhóm A: W5–W6, Nhóm B: W7 | Đo tự động bằng Telemetry (Google Sheets) |
+| **2. Số chuỗi chết liên tiếp** | Đếm số chuỗi HP=0 (≥3 lần/5 phút) của mỗi user | Nhóm A: Chưa có | Nhóm B thấp hơn nhóm A ≥30% | Nhóm A: W5–W6, Nhóm B: W7 | Đo tự động bằng Telemetry (Google Sheets) |
+
+## Sản phẩm dự kiến (MVP)
+1. **Gameplay cốt lõi:** Nhân vật 2D di chuyển, chiến đấu, nhặt vật phẩm cộng chỉ số trực tiếp (không túi đồ).
+2. **Rule-Based Engine:** Máy luật đọc chỉ số sức mạnh của người chơi để rẽ nhánh nhiệm vụ phù hợp.
+3. **Telemetry:** Tự động gửi log sự kiện về server.
+4. **DevSecOps:** API Server bằng Python (FastAPI), chạy trên Docker, có CI/CD.
+
+## Công nghệ sử dụng
+- **Client:** Unity 2D (C#)
+- **Server:** Python FastAPI
+- **DB/Log:** Google Sheets API, Discord Webhook
+- **DevSecOps:** Docker, GitHub Actions, Render
+
+## Tiến độ 10 Tuần
+- **W1:** Đề cương, Repo, Chốt Pilot
+- **W4:** Must #1 (Core game, gửi sự kiện telemetry)
+- **W5:** Must #2 (Máy luật A/B, Google Sheets)
+- **W6:** Must #3 (Bảng tổng hợp chỉ số)
+- **W7:** Docker + CI/CD
+- **W10:** Bản v1.0, Video demo, Báo cáo cuối
+
+## Dữ liệu người chơi
+Dữ liệu Telemetry chỉ được thu thập khi người chơi đồng ý và hoàn toàn ẩn danh.
+
+## Thông tin sinh viên
+- **Sinh viên:** Ngô Thành Tiến · MSSV 2380602230 · Lớp 23DTHC7
+- **GVHD:** TS. Nguyễn Quang Trung
